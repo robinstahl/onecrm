@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db_name
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend_network
+
+  backend:
+    build: ./backend
+    environment:
+      - DATABASE_URL=postgres://user:password@postgres/db_name
+    depends_on:
+      - postgres
+    networks:
+      - backend_network
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
+
+networks:
+  backend_network:
